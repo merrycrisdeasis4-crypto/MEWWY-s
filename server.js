@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'src')));
+app.use(express.static(__dirname));
 
 // Initialize SQLite Database
 const db = new sqlite3.Database('./mewwys.db', (err) => {
