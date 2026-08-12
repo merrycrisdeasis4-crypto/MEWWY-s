@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MEWWY's Top-Up Shop</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      #navCatalog {
+        display: none;
+      }
+      .catalog-container {
+        padding: 16px;
+        display: none;
+      }
+      .catalog-container.active {
+        display: block;
+      }
+      .reviews-container {
+        padding: 16px;
+        display: none;
+      }
+      .reviews-container.active {
+        display: block;
+      }
+
+      .catalog-item-row {
+        background: #1e1e1e;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #333;
+      }
+      .catalog-item-row input,
+      .catalog-item-row select {
+        background: #2a2a2a;
+        border: 1px solid #444;
+        color: #fff;
+        padding: 6px;
+        border-radius: 4px;
+        font-size: 13px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .save-catalog-btn {
+        background: var(--accent-pink);
+        color: #fff;
+        border: none;
+        padding: 12px;
+        width: 100%;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 15px;
+      }
+      .admin-section-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--accent-pink);
+        margin: 15px 0 8px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Modernized Buy Button (Solid Color, No Gradient, No Star) */
+      .buy-btn {
+        background: var(--accent-pink);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(255, 107, 129, 0.3);
+        transition: all 0.2s ease;
+      }
+      .buy-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+      }
+
+      /* Transactions Feed */
+      .transactions-section {
+        margin-top: 24px;
+        padding: 16px;
+        background: rgba(25, 25, 30, 0.7);
+        border-radius: 16px;
+        border: 1px solid #333;
+      }
+      .transactions-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .transaction-item {
+        background: #1a1a1f;
+        padding: 10px 14px;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-left: 3px solid var(--accent-pink);
+      }
+      .transaction-info {
+        color: var(--text-secondary);
+        font-size: 12px;
+        margin-top: 2px;
+      }
+
+      /* Review Styles */
+      .review-stats-card {
+        background: #1a1a20;
+        border: 1px solid #333;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .rating-big {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+      }
+      .rating-big span {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: normal;
+      }
+      .star-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 6px;
+      }
+      .star-bar-bg {
+        flex: 1;
+        height: 6px;
+        background: #2a2a32;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .star-bar-fill {
+        height: 100%;
+        background: #f39c12;
+        border-radius: 3px;
+      }
+
+      .submit-review-card {
+        background: #1a1a20;
+        border: 1px solid #333;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      .review-input-group {
+        margin-bottom: 12px;
+      }
+      .review-input-group label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        display: block;
+        margin-bottom: 4px;
+      }
+      .review-input-group select,
+      .review-input-group input,
+      .review-input-group textarea {
+        width: 100%;
+        background: #25252d;
+        border: 1px solid #444;
+        color: #fff;
+        padding: 8px 10px;
+        border-radius: 8px;
+        font-size: 13px;
+        box-sizing: border-box;
+      }
+      .submit-review-btn {
+        background: var(--accent-pink);
+        color: #fff;
+        border: none;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .review-card {
+        background: #1e1e24;
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 10px;
+      }
+      .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 4px;
+      }
+      .review-author {
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text-primary);
+      }
+      .review-stars {
+        color: #f39c12;
+        font-size: 12px;
+      }
+      .review-comment {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- SHOP VIEW -->
+    <div id="shopView">
+      <div class="header-card" id="headerCardStyle">
+        <div class="tag">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+          Instant Top-Up
+        </div>
+        <h1 id="displayTitle">Welcome to MEWWY's! ✨</h1>
+        <p id="displaySubtitle">
+          Direct top-up via User ID & Server ID. Pay easily with GCash.
+        </p>
+      </div>
+
+      <div class="tabs" id="shopTabsContainer">
+        <!-- Loaded dynamically -->
+      </div>
+
+      <div class="search-container">
+        <input
+          type="text"
+          class="search-bar"
+          id="searchInput"
+          placeholder="Search items..."
+          oninput="filterProducts()"
+        />
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+
+    <!-- REVIEWS VIEW -->
+    <div id="reviewsView" class="reviews-container">
+      <div class="header-card" style="margin-bottom: 15px">
+        <div class="tag">⭐ Customer Feedback</div>
+        <h2>Review Detail</h2>
+        <p>See ratings and share your experience with us!</p>
+      </div>
+
+      <!-- Rating Overview Card -->
+      <div class="review-stats-card" id="reviewStatsCard">
+        <!-- Loaded dynamically -->
+      </div>
+
+      <!-- Submit Review Card for Customers -->
+      <div class="submit-review-card">
+        <div
+          style="
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+          "
+        >
+          Leave a Review
+        </div>
+        <div class="review-input-group">
+          <label>Rating</label>
+          <select id="newReviewRating">
+            <option value="5">5 Stars</option>
+            <option value="4">4 Stars</option>
+            <option value="3">3 Stars</option>
+            <option value="2">2 Stars</option>
+            <option value="1">1 Star</option>
+          </select>
+        </div>
+        <div class="review-input-group">
+          <label>Your Name</label>
+          <input type="text" id="newReviewAuthor" placeholder="John Doe" />
+        </div>
+        <div class="review-input-group">
+          <label>Your Review</label>
+          <textarea
+            id="newReviewComment"
+            rows="3"
+            placeholder="Share your thoughts..."
+          ></textarea>
+        </div>
+        <button class="submit-review-btn" onclick="submitCustomerReview()">
+          Submit Review
+        </button>
+      </div>
+
+      <!-- Reviews List -->
+      <div
+        style="
+          font-weight: 600;
+          font-size: 14px;
+          margin-bottom: 10px;
+          color: var(--text-primary);
+        "
+      >
+        Customer Feedback
+      </div>
+      <div id="customerReviewsList">
+        <!-- Loaded dynamically -->
+      </div>
+
+      <!-- Recent Successful Proofs & Transactions at the Bottom of Reviews -->
+      <div class="transactions-section">
+        <div class="transactions-title">
+          <span>📜</span> Recent Successful Proofs & Transactions
+        </div>
+        <div id="customerTransactionsList">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CHECKOUT VIEW -->
+    <div id="checkoutView" class="checkout-container">
+      <button class="back-btn" onclick="switchTab('shop')">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Checkout
+      </button>
+
+      <div class="checkout-card">
+        <h3>Order Summary</h3>
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          "
+        >
+          <div>
+            <div
+              id="checkoutProdName"
+              style="font-weight: 600; font-size: 16px"
+            ></div>
+            <div
+              id="checkoutProdDesc"
+              style="font-size: 12px; color: var(--text-secondary)"
+            >
+              Direct top-up
+            </div>
+          </div>
+          <div
+            id="checkoutProdPrice"
+            style="
+              font-size: 20px;
+              font-weight: 700;
+              color: var(--text-primary);
+            "
+          ></div>
+        </div>
+      </div>
+
+      <div class="checkout-card">
+        <h3>GCash Payment</h3>
+        <div class="gcash-box">
+          <img
+            id="displayGcashQr"
+            src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=09951982542"
+            alt="GCash QR"
+          />
+          <div>
+            <div style="font-size: 12px; color: var(--text-secondary)">
+              Account Name
+            </div>
+            <div
+              id="displayGcashName"
+              style="font-weight: 600; margin-bottom: 8px"
+            >
+              MI.....R D.
+            </div>
+            <div style="font-size: 12px; color: var(--text-secondary)">
+              GCash Number
+            </div>
+            <div
+              id="displayGcashNumber"
+              style="color: var(--accent-pink); font-weight: 600"
+            >
+              09951982542
+            </div>
+          </div>
+        </div>
+        <p style="font-size: 12px; color: var(--text-secondary); margin: 0">
+          Pay exact amount, then input reference number.
+        </p>
+      </div>
+
+      <div class="checkout-card">
+        <h3>Your Details</h3>
+        <div class="form-group">
+          <label>User ID</label>
+          <input
+            type="text"
+            id="gameId"
+            class="form-input"
+            placeholder="e.g. 12345678"
+          />
+        </div>
+        <div class="form-group">
+          <label>Server ID</label>
+          <input
+            type="text"
+            id="zoneId"
+            class="form-input"
+            placeholder="e.g. 301"
+          />
+        </div>
+        <div class="form-group">
+          <label>Email for Receipt (Optional)</label>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            placeholder="your.email@gmail.com"
+          />
+        </div>
+        <div class="form-group">
+          <label>GCash Reference Number</label>
+          <input
+            type="text"
+            id="refNum"
+            class="form-input"
+            placeholder="13-digit reference no."
+          />
+        </div>
+        <button
+          class="place-order-btn"
+          id="submitBtn"
+          onclick="confirmAndSubmitOrder()"
+        >
+          Place Order — <span id="btnPrice"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ADMIN CATALOG VIEW -->
+    <div id="catalogView" class="catalog-container">
+      <div class="header-card" style="margin-bottom: 15px">
+        <h2>Owner Control Panel 🛠️</h2>
+        <p>
+          Manage categories, style settings, GCash info, items, and reviews.
+        </p>
+      </div>
+
+      <div class="admin-section-title">GCash Payment Settings</div>
+      <div class="catalog-item-row">
+        <div style="margin-bottom: 8px">
+          <label style="font-size: 11px; color: #aaa"
+            >GCash Account Name:</label
+          >
+          <input
+            type="text"
+            id="settingGcashName"
+            placeholder="e.g. Merry Cris D."
+          />
+        </div>
+        <div style="margin-bottom: 8px">
+          <label style="font-size: 11px; color: #aaa">GCash Number:</label>
+          <input
+            type="text"
+            id="settingGcashNumber"
+            placeholder="e.g. 09951982542"
+          />
+        </div>
+        <div>
+          <label style="font-size: 11px; color: #aaa"
+            >GCash QR Code Image URL:</label
+          >
+          <input
+            type="text"
+            id="settingGcashQr"
+            placeholder="Paste image link or QR generator URL"
+          />
+        </div>
+      </div>
+
+      <div class="admin-section-title">Manage Categories</div>
+      <div style="font-size: 12px; color: #aaa; margin-bottom: 8px">
+        Add or remove product categories:
+      </div>
+      <div id="adminCategoriesList"></div>
+      <button
+        type="button"
+        class="buy-btn"
+        style="
+          width: 100%;
+          justify-content: center;
+          margin-bottom: 15px;
+          border-radius: 8px;
+          padding: 10px;
+        "
+        onclick="addCategoryRow()"
+      >
+        + Add New Category
+      </button>
+
+      <div class="admin-section-title">Homepage Style Settings</div>
+      <div class="catalog-item-row">
+        <div style="margin-bottom: 8px">
+          <label style="font-size: 11px; color: #aaa">Shop Title:</label>
+          <input type="text" id="settingTitle" />
+        </div>
+        <div style="margin-bottom: 8px">
+          <label style="font-size: 11px; color: #aaa"
+            >Shop Subtitle / Description:</label
+          >
+          <input type="text" id="settingSubtitle" />
+        </div>
+        <div>
+          <label style="font-size: 11px; color: #aaa"
+            >Header Background Image URL:</label
+          >
+          <input
+            type="text"
+            id="settingBgImage"
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+      </div>
+
+      <div class="admin-section-title">
+        Manage Customer Reviews (Delete Only)
+      </div>
+      <div id="adminReviewsList"></div>
+
+      <div class="admin-section-title">Manage Successful Transactions</div>
+      <div id="adminTransactionsList"></div>
+      <button
+        type="button"
+        class="buy-btn"
+        style="
+          width: 100%;
+          justify-content: center;
+          margin-bottom: 15px;
+          border-radius: 8px;
+          padding: 10px;
+        "
+        onclick="addTransactionRow()"
+      >
+        + Add New Transaction Proof
+      </button>
+
+      <div class="admin-section-title">Catalog Items</div>
+      <div id="catalogEditorList"></div>
+      <button
+        type="button"
+        class="buy-btn"
+        style="
+          width: 100%;
+          justify-content: center;
+          margin-bottom: 15px;
+          border-radius: 8px;
+          padding: 10px;
+        "
+        onclick="addProductRow()"
+      >
+        + Add New Product
+      </button>
+
+      <button class="save-catalog-btn" onclick="saveCatalog()">
+        Save Changes ✨
+      </button>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a
+        href="#"
+        class="nav-item active"
+        id="navShop"
+        onclick="switchTab('shop')"
+      >
+        <svg
+          class="nav-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"
+          ></path>
+        </svg>
+        Shop
+      </a>
+      <a
+        href="#"
+        class="nav-item"
+        id="navReviews"
+        onclick="switchTab('reviews')"
+      >
+        <svg
+          class="nav-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+        Reviews
+      </a>
+      <a
+        href="#"
+        class="nav-item"
+        id="navCatalog"
+        onclick="switchTab('catalog')"
+      >
+        <svg
+          class="nav-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.82 2 2 0 0 1-2.82 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.82 0 2 2 0 0 1 0-2.82l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.82 2 2 0 0 1 2.82 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.82 0 2 2 0 0 1 0 2.82l-.06-.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+          ></path>
+        </svg>
+        Catalog
+      </a>
+    </div>
+
+    <!-- Script -->
+    <script>
+      const scriptURL =
+        'https://script.google.com/macros/s/AKfycbyaAJPd_qB4oHugwwFnFh9p0ViXmWqRI8nDcOvPI0S19oqmRUGKvy7p9R1PcjaTRwzh/exec';
+      let selectedProduct = null;
+      let activeCategoryFilter = 'All';
+
+      let gcashInfo = JSON.parse(localStorage.getItem('mewwy_gcash_info')) || {
+        name: 'MI.....R D.',
+        number: '09951982542',
+        qr: 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=09951982542',
+      };
+
+      let categories = JSON.parse(localStorage.getItem('mewwy_categories')) || [
+        'Diamonds',
+        'Starlight',
+        'Weekly Pass',
+        'Charisma',
+      ];
+
+      let products = JSON.parse(localStorage.getItem('mewwy_products')) || [
+        {
+          name: '86 Diamonds',
+          category: 'Diamonds',
+          price: 90,
+          stock: 10,
+          description: '80 + 6 Bonus Diamonds',
+        },
+        {
+          name: '172 Diamonds',
+          category: 'Diamonds',
+          price: 170,
+          stock: 25,
+          description: '156 + 16 Bonus Diamonds',
+        },
+        {
+          name: 'Standard Starlight Card',
+          category: 'Starlight',
+          price: 300,
+          stock: 10,
+          description: 'Unlock monthly Starlight',
+        },
+        {
+          name: 'Weekly Diamond Pass',
+          category: 'Weekly Pass',
+          price: 110,
+          stock: 30,
+          description: 'Daily diamonds for 7 days',
+        },
+      ];
+
+      let homeSettings = JSON.parse(
+        localStorage.getItem('mewwy_home_settings')
+      ) || {
+        title: "Welcome to MEWWY's! ✨",
+        subtitle:
+          'Direct top-up via User ID & Server ID. Pay easily with GCash.',
+        bgImage: '',
+      };
+
+      let transactions = JSON.parse(
+        localStorage.getItem('mewwy_transactions')
+      ) || [
+        {
+          item: '86 Diamonds',
+          user: 'User ID: 8821*** (Server: 3031)',
+          date: 'Today',
+        },
+        {
+          item: 'Weekly Diamond Pass',
+          user: 'User ID: 4412*** (Server: 2012)',
+          date: 'Yesterday',
+        },
+      ];
+
+      let reviews = JSON.parse(localStorage.getItem('mewwy_reviews')) || [
+        { author: 'Andrea', rating: 5, comment: 'legit' },
+        { author: 'Ssob Clarence John', rating: 5, comment: 'Great discount' },
+      ];
+
+      function applyGcashSettings() {
+        document.getElementById('displayGcashName').innerText = gcashInfo.name;
+        document.getElementById('displayGcashNumber').innerText =
+          gcashInfo.number;
+        document.getElementById('displayGcashQr').src = gcashInfo.qr;
+      }
+
+      function applyHomeSettings() {
+        document.getElementById('displayTitle').innerText = homeSettings.title;
+        document.getElementById('displaySubtitle').innerText =
+          homeSettings.subtitle;
+
+        const headerCard = document.getElementById('headerCardStyle');
+        if (homeSettings.bgImage) {
+          headerCard.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${homeSettings.bgImage}')`;
+          headerCard.style.backgroundSize = 'cover';
+          headerCard.style.backgroundPosition = 'center';
+        } else {
+          headerCard.style.backgroundImage = '';
+        }
+      }
+
+      function switchTab(tab) {
+        document.getElementById('shopView').style.display = 'none';
+        document.getElementById('reviewsView').classList.remove('active');
+        document.getElementById('checkoutView').classList.remove('active');
+        document.getElementById('catalogView').classList.remove('active');
+
+        document.getElementById('navShop').classList.remove('active');
+        document.getElementById('navReviews').classList.remove('active');
+        document.getElementById('navCatalog').classList.remove('active');
+
+        if (tab === 'shop') {
+          document.getElementById('shopView').style.display = 'block';
+          document.getElementById('navShop').classList.add('active');
+          applyHomeSettings();
+          loadShopTabs();
+          loadProducts();
+        } else if (tab === 'reviews') {
+          document.getElementById('reviewsView').classList.add('active');
+          document.getElementById('navReviews').classList.add('active');
+          loadCustomerReviews();
+          loadCustomerTransactions();
+        } else if (tab === 'catalog') {
+          document.getElementById('catalogView').classList.add('active');
+          document.getElementById('navCatalog').classList.add('active');
+          loadCatalogEditor();
+        }
+      }
+
+      function loadShopTabs() {
+        const tabsContainer = document.getElementById('shopTabsContainer');
+        tabsContainer.innerHTML = `<div class="tab ${
+          activeCategoryFilter === 'All' ? 'active' : ''
+        }" onclick="filterByCategory('All')">All Items</div>`;
+        categories.forEach((cat) => {
+          tabsContainer.innerHTML += `<div class="tab ${
+            activeCategoryFilter === cat ? 'active' : ''
+          }" onclick="filterByCategory('${cat}')">${cat}</div>`;
+        });
+      }
+
+      function filterByCategory(cat) {
+        activeCategoryFilter = cat;
+        loadShopTabs();
+        loadProducts();
+      }
+
+      function loadProducts() {
+        const grid = document.getElementById('productGrid');
+        const searchQuery = document.getElementById('searchInput')
+          ? document.getElementById('searchInput').value.toLowerCase()
+          : '';
+        grid.innerHTML = '';
+
+        const filtered = products.filter((prod) => {
+          const matchesCat =
+            activeCategoryFilter === 'All' ||
+            prod.category === activeCategoryFilter;
+          const matchesSearch =
+            prod.name.toLowerCase().includes(searchQuery) ||
+            prod.description.toLowerCase().includes(searchQuery);
+          return matchesCat && matchesSearch;
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color: var(--text-secondary); padding: 30px; font-size: 13px;">No items found.</div>`;
+          return;
+        }
+
+        filtered.forEach((prod) => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+                    <div class="card-header">
+                        <span class="product-category">💎 ${
+                          prod.category
+                        }</span>
+                        <span class="stock-tag" style="background: ${
+                          prod.stock > 0 ? '#d4edda' : '#f8d7da'
+                        }; color: ${prod.stock > 0 ? '#155724' : '#721c24'}">
+                            ${prod.stock > 0 ? 'In Stock' : 'Out of Stock'}
+                        </span>
+                    </div>
+                    <h3 class="product-title">${prod.name}</h3>
+                    <p class="product-desc">${prod.description}</p>
+                    <hr style="border:0; border-top:1px solid #333; margin:8px 0;">
+                    <div class="card-footer">
+                        <div class="price">₱${prod.price}</div>
+                        <button class="buy-btn" ${
+                          prod.stock <= 0
+                            ? 'disabled style="opacity:0.5; cursor:not-allowed;"'
+                            : ''
+                        } onclick='goToCheckout(${JSON.stringify(
+            prod
+          )})'>Buy Now</button>
+                    </div>
+                `;
+          grid.appendChild(card);
+        });
+      }
+
+      function filterProducts() {
+        loadProducts();
+      }
+
+      function loadCustomerTransactions() {
+        const list = document.getElementById('customerTransactionsList');
+        if (!transactions || transactions.length === 0) {
+          list.innerHTML = `<div style="font-size:12px; color: var(--text-secondary); text-align:center; padding: 10px;">No recent transactions yet.</div>`;
+          return;
+        }
+
+        list.innerHTML = '';
+        transactions.forEach((tx) => {
+          list.innerHTML += `
+                    <div class="transaction-item">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary);">✅ Delivered: ${tx.item}</div>
+                            <div class="transaction-info">${tx.user}</div>
+                        </div>
+                        <div style="font-size: 11px; color: var(--accent-pink); font-weight: 600;">${tx.date}</div>
+                    </div>
+                `;
+        });
+      }
+
+      function loadCustomerReviews() {
+        const statsCard = document.getElementById('reviewStatsCard');
+        const list = document.getElementById('customerReviewsList');
+
+        let totalReviews = reviews.length;
+        let sumRating = reviews.reduce((acc, r) => acc + Number(r.rating), 0);
+        let avgRating =
+          totalReviews > 0 ? (sumRating / totalReviews).toFixed(1) : '5.0';
+
+        let counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        reviews.forEach((r) => {
+          if (counts[r.rating] !== undefined) counts[r.rating]++;
+        });
+
+        statsCard.innerHTML = `
+                <div class="rating-big">
+                    ${avgRating} <span>/ 5</span>
+                </div>
+                <div style="color: #f39c12; font-size: 14px; margin: 4px 0 2px 0;">⭐⭐⭐⭐⭐</div>
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">from ${totalReviews} review${
+          totalReviews === 1 ? '' : 's'
+        }</div>
+                
+                <div class="star-row"><span>★5</span><div class="star-bar-bg"><div class="star-bar-fill" style="width: ${
+                  totalReviews ? (counts[5] / totalReviews) * 100 : 0
+                }%"></div></div></div>
+                <div class="star-row"><span>★4</span><div class="star-bar-bg"><div class="star-bar-fill" style="width: ${
+                  totalReviews ? (counts[4] / totalReviews) * 100 : 0
+                }%"></div></div></div>
+                <div class="star-row"><span>★3</span><div class="star-bar-bg"><div class="star-bar-fill" style="width: ${
+                  totalReviews ? (counts[3] / totalReviews) * 100 : 0
+                }%"></div></div></div>
+                <div class="star-row"><span>★2</span><div class="star-bar-bg"><div class="star-bar-fill" style="width: ${
+                  totalReviews ? (counts[2] / totalReviews) * 100 : 0
+                }%"></div></div></div>
+                <div class="star-row"><span>★1</span><div class="star-bar-bg"><div class="star-bar-fill" style="width: ${
+                  totalReviews ? (counts[1] / totalReviews) * 100 : 0
+                }%"></div></div></div>
+            `;
+
+        if (!reviews || reviews.length === 0) {
+          list.innerHTML = `<div style="font-size:13px; color: var(--text-secondary); text-align:center; padding: 20px;">No reviews available yet. Be the first to review!</div>`;
+          return;
+        }
+
+        list.innerHTML = '';
+        reviews.forEach((rev) => {
+          const starsCount = Number(rev.rating) || 5;
+          const starsString = '⭐'.repeat(starsCount);
+          list.innerHTML += `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">${rev.author}</span>
+                            <span class="review-stars">${starsString}</span>
+                        </div>
+                        <div class="review-comment">${rev.comment}</div>
+                    </div>
+                `;
+        });
+      }
+
+      function submitCustomerReview() {
+        const author = document.getElementById('newReviewAuthor').value.trim();
+        const rating = document.getElementById('newReviewRating').value;
+        const comment = document
+          .getElementById('newReviewComment')
+          .value.trim();
+
+        if (!author || !comment) {
+          alert('Please enter your name and review thoughts.');
+          return;
+        }
+
+        reviews.unshift({ author, rating: Number(rating), comment });
+        localStorage.setItem('mewwy_reviews', JSON.stringify(reviews));
+
+        document.getElementById('newReviewAuthor').value = '';
+        document.getElementById('newReviewComment').value = '';
+        alert('✨ Thank you for your review!');
+        loadCustomerReviews();
+      }
+
+      function loadCatalogEditor() {
+        document.getElementById('settingGcashName').value = gcashInfo.name;
+        document.getElementById('settingGcashNumber').value = gcashInfo.number;
+        document.getElementById('settingGcashQr').value = gcashInfo.qr;
+
+        document.getElementById('settingTitle').value = homeSettings.title;
+        document.getElementById('settingSubtitle').value =
+          homeSettings.subtitle;
+        document.getElementById('settingBgImage').value =
+          homeSettings.bgImage || '';
+
+        // Load Categories Editor
+        const catList = document.getElementById('adminCategoriesList');
+        catList.innerHTML = '';
+        categories.forEach((cat, index) => {
+          catList.innerHTML += `
+                    <div class="catalog-item-row" style="display: flex; gap: 6px; align-items: center;">
+                        <input type="text" id="catName_${index}" value="${cat}" style="flex: 1;" placeholder="Category Name">
+                        <button type="button" onclick="removeCategory(${index})" style="background:#d9534f; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">X</button>
+                    </div>
+                `;
+        });
+
+        // Load Admin Reviews Editor (Delete Only)
+        const revList = document.getElementById('adminReviewsList');
+        revList.innerHTML = '';
+        if (reviews.length === 0) {
+          revList.innerHTML = `<div style="font-size:12px; color: #888;">No reviews to manage.</div>`;
+        }
+        reviews.forEach((rev, index) => {
+          revList.innerHTML += `
+                    <div class="catalog-item-row" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 13px;">${rev.author} (${rev.rating}★)</div>
+                            <div style="font-size: 12px; color: #aaa;">${rev.comment}</div>
+                        </div>
+                        <button type="button" onclick="deleteReview(${index})" style="background:#d9534f; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">Delete</button>
+                    </div>
+                `;
+        });
+
+        // Load Admin Transactions Editor
+        const txList = document.getElementById('adminTransactionsList');
+        txList.innerHTML = '';
+        transactions.forEach((tx, index) => {
+          txList.innerHTML += `
+                    <div class="catalog-item-row" style="display: flex; gap: 6px; align-items: center;">
+                        <input type="text" id="txItem_${index}" value="${tx.item}" style="flex: 1;" placeholder="Item">
+                        <input type="text" id="txUser_${index}" value="${tx.user}" style="flex: 1.5;" placeholder="User Details">
+                        <input type="text" id="txDate_${index}" value="${tx.date}" style="width: 80px;" placeholder="Date">
+                        <button type="button" onclick="removeTransaction(${index})" style="background:#d9534f; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">X</button>
+                    </div>
+                `;
+        });
+
+        // Load Catalog Items Editor
+        renderProductEditorList();
+      }
+
+      function renderProductEditorList() {
+        const list = document.getElementById('catalogEditorList');
+        list.innerHTML = '';
+        products.forEach((prod, index) => {
+          let optionsHTML = '';
+          categories.forEach((cat) => {
+            optionsHTML += `<option value="${cat}" ${
+              prod.category === cat ? 'selected' : ''
+            }>${cat}</option>`;
+          });
+
+          list.innerHTML += `
+                    <div class="catalog-item-row">
+                        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+                            <input type="text" id="cName_${index}" value="${
+            prod.name
+          }" style="flex: 2;" placeholder="Item Name">
+                            <select id="cCat_${index}" style="flex: 1;">
+                                ${optionsHTML}
+                            </select>
+                            <button type="button" onclick="removeProduct(${index})" style="background:#d9534f; color:#fff; border:none; padding:6px 10px; border-radius:4px; cursor:pointer;">X</button>
+                        </div>
+                        <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+                            <input type="number" id="cPrice_${index}" value="${
+            prod.price
+          }" style="flex: 1;" placeholder="Price ₱">
+                            <input type="number" id="cStock_${index}" value="${
+            prod.stock
+          }" style="flex: 1;" placeholder="Stock">
+                        </div>
+                        <div>
+                            <input type="text" id="cDesc_${index}" value="${
+            prod.description || ''
+          }" placeholder="Description (e.g. 80 + 6 Bonus)">
+                        </div>
+                    </div>
+                `;
+        });
+      }
+
+      function addCategoryRow() {
+        categories.push('New Category');
+        loadCatalogEditor();
+      }
+
+      function removeCategory(index) {
+        categories.splice(index, 1);
+        loadCatalogEditor();
+      }
+
+      function addProductRow() {
+        products.push({
+          name: 'New Item',
+          category: categories[0] || 'General',
+          price: 100,
+          stock: 10,
+          description: 'Item description',
+        });
+        renderProductEditorList();
+      }
+
+      function removeProduct(index) {
+        products.splice(index, 1);
+        renderProductEditorList();
+      }
+
+      function deleteReview(index) {
+        reviews.splice(index, 1);
+        localStorage.setItem('mewwy_reviews', JSON.stringify(reviews));
+        loadCatalogEditor();
+      }
+
+      function addTransactionRow() {
+        transactions.push({
+          item: 'New Item',
+          user: 'User ID: ****',
+          date: 'Just now',
+        });
+        loadCatalogEditor();
+      }
+
+      function removeTransaction(index) {
+        transactions.splice(index, 1);
+        loadCatalogEditor();
+      }
+
+      function saveCatalog() {
+        gcashInfo.name = document
+          .getElementById('settingGcashName')
+          .value.trim();
+        gcashInfo.number = document
+          .getElementById('settingGcashNumber')
+          .value.trim();
+        gcashInfo.qr = document.getElementById('settingGcashQr').value.trim();
+        localStorage.setItem('mewwy_gcash_info', JSON.stringify(gcashInfo));
+
+        homeSettings.title = document.getElementById('settingTitle').value;
+        homeSettings.subtitle =
+          document.getElementById('settingSubtitle').value;
+        homeSettings.bgImage = document.getElementById('settingBgImage').value;
+        localStorage.setItem(
+          'mewwy_home_settings',
+          JSON.stringify(homeSettings)
+        );
+
+        // Save Categories
+        categories = [];
+        document
+          .querySelectorAll('#adminCategoriesList .catalog-item-row')
+          .forEach((row, index) => {
+            const name = document
+              .getElementById(`catName_${index}`)
+              .value.trim();
+            if (name) categories.push(name);
+          });
+        localStorage.setItem('mewwy_categories', JSON.stringify(categories));
+
+        // Save Transactions
+        transactions = [];
+        document
+          .querySelectorAll('#adminTransactionsList .catalog-item-row')
+          .forEach((row, index) => {
+            const item = document.getElementById(`txItem_${index}`).value;
+            const user = document.getElementById(`txUser_${index}`).value;
+            const date = document.getElementById(`txDate_${index}`).value;
+            transactions.push({ item, user, date });
+          });
+        localStorage.setItem(
+          'mewwy_transactions',
+          JSON.stringify(transactions)
+        );
+
+        // Save Products
+        products = [];
+        document
+          .querySelectorAll('#catalogEditorList .catalog-item-row')
+          .forEach((row, index) => {
+            const name = document.getElementById(`cName_${index}`).value;
+            const category = document.getElementById(`cCat_${index}`).value;
+            const price = Number(
+              document.getElementById(`cPrice_${index}`).value
+            );
+            const stock = Number(
+              document.getElementById(`cStock_${index}`).value
+            );
+            const description = document.getElementById(`cDesc_${index}`).value;
+            products.push({ name, category, price, stock, description });
+          });
+        localStorage.setItem('mewwy_products', JSON.stringify(products));
+
+        if (
+          !categories.includes(activeCategoryFilter) &&
+          activeCategoryFilter !== 'All'
+        ) {
+          activeCategoryFilter = 'All';
+        }
+
+        applyGcashSettings();
+        alert('✨ Changes saved successfully!');
+        switchTab('shop');
+      }
+
+      function goToCheckout(prod) {
+        selectedProduct = prod;
+        document.getElementById('shopView').style.display = 'none';
+        document.getElementById('checkoutView').classList.add('active');
+
+        document.getElementById('checkoutProdName').innerText = prod.name;
+        document.getElementById('checkoutProdDesc').innerText =
+          prod.description || 'Direct top-up';
+        document.getElementById(
+          'checkoutProdPrice'
+        ).innerText = `₱${prod.price}`;
+        document.getElementById('btnPrice').innerText = `₱${prod.price}`;
+      }
+
+      function confirmAndSubmitOrder() {
+        const gameId = document.getElementById('gameId').value.trim();
+        const serverId = document.getElementById('zoneId').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const refNum = document.getElementById('refNum').value.trim();
+
+        if (!gameId || !serverId || !refNum) {
+          alert(
+            'Please fill in your MLBB User ID, Server ID, and GCash Reference Number.'
+          );
+          return;
+        }
+
+        // Confirmation Pop-up Checklist
+        const confirmationMessage =
+          'Please double check your details before placing your order:\n\n' +
+          '• MLBB User ID: ' +
+          gameId +
+          '\n' +
+          '• Server ID: ' +
+          serverId +
+          '\n' +
+          '• Gmail: ' +
+          (email || 'None') +
+          '\n' +
+          '• GCash Reference No.: ' +
+          refNum +
+          '\n\n' +
+          'Are you sure all information is correct?';
+
+        if (confirm(confirmationMessage)) {
+          submitOrder(gameId, serverId, email, refNum);
+        }
+      }
+
+      async function submitOrder(gameId, serverId, email, refNum) {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.innerText = 'Processing...';
+        submitBtn.disabled = true;
+
+        const payload = {
+          itemName: selectedProduct.name,
+          quantity: 1,
+          userId: gameId,
+          serverId: serverId,
+          referenceNo: refNum,
+          email: email || 'None',
+        };
+
+        try {
+          await fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload),
+          });
+
+          alert(
+            '✨ Order submitted successfully! Sent to your sheet & Discord.'
+          );
+
+          document.getElementById('gameId').value = '';
+          document.getElementById('zoneId').value = '';
+          document.getElementById('email').value = '';
+          document.getElementById('refNum').value = '';
+
+          switchTab('shop');
+        } catch (err) {
+          console.error('Submission error:', err);
+          alert('There was an issue submitting your order.');
+        } finally {
+          submitBtn.innerText = `Place Order — ₱${selectedProduct.price}`;
+          submitBtn.disabled = false;
+        }
+      }
+
+      // Secret URL Admin Unblocker & Button Revealer
+      window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('admin') === 'mewwy123') {
+          // Open the admin catalog view
+          if (typeof switchTab === 'function') {
+            switchTab('catalog');
+          }
+
+          // Force the hidden catalog button to appear on your screen
+          const navCatalogBtn = document.getElementById('navCatalog');
+          if (navCatalogBtn) {
+            navCatalogBtn.style.display = 'flex';
+          }
+
+          alert('🔐 Admin Mode Unlocked!');
+        }
+      });
+    </script>
+  </body>
+</html>
